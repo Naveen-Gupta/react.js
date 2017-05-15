@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Learning React.js</title>	
+	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://fb.me/react-0.14.7.js"></script>
+    <script src="https://fb.me/react-dom-0.14.7.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.25/browser.min.js"></script>
+</head>
+<body>
+    <div class="container"> 
+      <div class="row">
+        <div class="col-md-12">
+           <div id="app"></div>
+        </div>
+      </div>      
+    </div>
+
+    <script type="text/babel">
+      var App = React.createClass({
+        getInitialState: function(){
+          return{
+            text: '',
+            todos: [ 
+                {
+                  id:1,
+                  text: 'meeting at 10:00am'
+                },
+                {
+                  id:2,
+                  text: 'attending conference at 11:00am'
+                },
+                {
+                  id:3,
+                  text: 'lunch at 01:00pm'
+                }
+              ]
+              }
+          },
+
+        render: function(){
+          return(
+          <div>          
+              <ToDoForm onToDoAdd = {this.handleToDoAdd} />
+              <ToDoList todoList={this.state.todos}/>
+          </div>           
+          )
+        },
+
+        handleToDoAdd: function(text){
+            var newToDo = {
+              id: this.state.todos.length + 1,
+              text: text
+            }
+
+            this.setState({todos: this.state.todos.concat(newToDo)});
+        }
+      });
+
+
+      var ToDoForm = React.createClass({
+        render: function(){
+          return(
+              <div>
+                <form onSubmit={this.onSubmit}>
+                    <div className="form-group">
+                      <label>To Do Task Text: </label>
+                      <input type="text" ref="text" onChange={this.onChange} className="form-control"/>
+                    </div>
+                </form>
+              </div>
+          )
+        },
+
+        onChange: function(){
+          console.log('changing text...');
+        },
+
+        onSubmit: function(e){
+          e.preventDefault();
+          var text= this.refs.text.value.trim();
+
+          if(!text){
+              alert('Please make a todo..');
+              return;
+          }
+
+          this.props.onToDoAdd(text);
+          this.refs.text.value = '';
+        }
+
+      });
+
+
+      var ToDoList = React.createClass({
+        render: function(){
+          return(
+              <ul className="list-group">
+                {
+                  this.props.todoList.map(todo => {
+                      return <li className="list-group-item" todo={todo} key={todo.id}>{todo.text}</li>
+                  })
+                }
+              </ul>
+          )
+        }
+      });
+
+     ReactDOM.render(
+        <App />,
+        document.getElementById('app')
+      );
+    </script>
+</body>
+</html>
